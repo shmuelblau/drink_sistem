@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="he">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>אישור הזמנה</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <h1>אישור הזמנה</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>מוצר</th>
+                <th>כמות</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for product in products %}
+            {% set qty = order_data.get('product_' + product.product_id, ['0'])[0] | int %}
+            {% if qty > 0 %}
+            <tr>
+                <td>{{ product.description }}</td>
+                <td>{{ qty }}</td>
+            </tr>
+            {% endif %}
+            {% endfor %}
+        </tbody>
+    </table>
+    <a href="/">חזור לדף הראשי</a>
+</body>
+</html>

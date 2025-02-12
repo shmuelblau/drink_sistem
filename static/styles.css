@@ -1,0 +1,44 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    text-align: center;
+    direction: rtl;
+}
+
+h1 {
+    color: #333;
+}
+
+.order-card {
+    background: white;
+    margin: 20px auto;
+    padding: 15px;
+    width: 50%;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+h2 {
+    color: #007bff;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+th, td {
+    border: 1px solid #ddd;
+    padding: 10px;
+}
+
+th {
+    background-color: #f8f8f8;
+}
+
+.total-price {
+    font-size: 18px;
+    font-weight: bold;
+    color: #d9534f;
+}

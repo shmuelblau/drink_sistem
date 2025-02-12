@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="he">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>רשימת הזמנות</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <h1>רשימת הזמנות</h1>
+    
+    {% if orders %}  
+        {% for order in orders %}
+        <div class="order-card">
+            <h2>הזמנה של {{ order.customer_name }}</h2>
+            <p><strong>תאריך:</strong> {{ order.order_date }}</p>
+            
+            {% if order.items and order.items is iterable %}
+                <h3>פריטים:</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>תיאור</th>
+                            <th>כמות</th>
+                            <th>מחיר ליחידה</th>
+                            <th>סה"כ</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in order.items %}
+                        <tr>
+                            <td>{{ item.description }}</td>
+                            <td>{{ item.quantity }}</td>
+                            <td>{{ item.price }} ₪</td>
+                            <td>{{ item.quantity * item.price }} ₪</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <p>אין פריטים בהזמנה זו.</p>
+            {% endif %}
+            
+            <p class="total-price">סכום כולל: <strong>{{ order.total_price }} ₪</strong></p>
+        </div>
+        {% endfor %}
+    {% else %}
+        <p>לא נמצאו הזמנות.</p>
+    {% endif %}
+    
+</body>
+</html>
