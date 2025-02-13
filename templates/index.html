@@ -5,45 +5,103 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>רשימת מוצרים</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 20px;
+        }
+        .container {
+            max-width: 600px;
+            margin: auto;
+        }
+        .category {
+            margin-bottom: 20px;
+        }
+        .product-grid {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+        }
+        .product-card {
+            width: 48%;
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            box-shadow: 2px 2px 5px rgba(0,0,0,0.1);
+        }
+        input[type=number] {
+            width: 50px;
+        }
+        img.logo {
+            max-width: 150px;
+            margin-bottom: 20px;
+        }
+        #orderForm {
+            display: block;
+        }
+        #orderConfirmation {
+            display: none;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+    </style>
 </head>
 <body>
-    <h1>רשימת מוצרים</h1>
-    <form id="orderForm">
-        <table>
-            <thead>
-                <tr>
-                    <th>מוצר</th>
-                    <th>מחיר</th>
-                    <th>כמות</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for product in products %}
-                <tr>
-                    <td>{{ product.description }}</td>
-                    <td>{{ product.price }} ₪</td>
-                    <td>
+    <div class="container">
+        <img src="{{ url_for('static', filename='logo.png') }}" alt="לוגו החברה" class="logo">
+      
+        <form id="orderForm">
+
+            <label for="customer_name">שם המזמין:</label>
+            <input type="text" id="customer_name" required>
+            <h1>רשימת מוצרים</h1>
+            {% for category, products in categorized_products.items() %}
+            <div class="category">
+                <h2>{{ category }}</h2>
+                <div class="product-grid">
+                    {% for product in products %}
+                    <div class="product-card">
+                        <strong>{{ product.description }}</strong><br>
+                        מחיר: {{ product.price }} ₪<br>
                         <input type="number" name="product_{{ product.product_id }}" value="0" min="0" 
                                data-id="{{ product.product_id }}" 
                                data-description="{{ product.description }}" 
                                data-price="{{ product.price }}">
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-        <label for="customer_name">שם המזמין:</label>
-        <input type="text" id="customer_name" required>
-        <button type="button" onclick="submitOrder()">שלח הזמנה</button>
-    </form>
-
-    <div id="orderConfirmation" style="display: none;">
-        <h2>הזמנה בוצעה בהצלחה!</h2>
-        <p><strong>שם המזמין:</strong> <span id="confirmName"></span></p>
-        <p><strong>תאריך הזמנה:</strong> <span id="confirmDate"></span></p>
-        <h3>פרטי ההזמנה:</h3>
-        <ul id="confirmItems"></ul>
-        <p><strong>סה"כ לתשלום:</strong> <span id="confirmTotal"></span> ₪</p>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endfor %}
+            
+            <button type="button" onclick="submitOrder()">שלח הזמנה</button>
+        </form>
+        
+        <div id="orderConfirmation">
+            <h2>הזמנה בוצעה בהצלחה!</h2>
+            <p><strong>שם המזמין:</strong> <span id="confirmName"></span></p>
+            <p><strong>תאריך הזמנה:</strong> <span id="confirmDate"></span></p>
+            <h3>פרטי ההזמנה:</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>תיאור</th>
+                        <th>כמות</th>
+                        <th>מחיר ליחידה</th>
+                        <th>סה"כ</th>
+                    </tr>
+                </thead>
+                <tbody id="confirmItems"></tbody>
+            </table>
+            <p><strong>סה"כ לתשלום:</strong> <span id="confirmTotal"></span> ₪</p>
+        </div>
     </div>
 
     <script>
@@ -72,36 +130,24 @@
                 return;
             }
 
-            const orderData = {
-                customer_name: customerName,
-                order_date: orderDate,
-                items: items,
-                total_price: totalPrice
-            };
+            document.getElementById('orderForm').style.display = 'none';
+            document.getElementById('orderConfirmation').style.display = 'block';
+            
+            document.getElementById('confirmName').innerText = customerName;
+            document.getElementById('confirmDate').innerText = orderDate;
+            document.getElementById('confirmTotal').innerText = totalPrice.toFixed(2);
 
-            fetch('/order', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(orderData)
-            })
-            .then(response => response.json())
-            .then(data => {
-                document.getElementById('confirmName').innerText = data.order.customer_name;
-                document.getElementById('confirmDate').innerText = data.order.order_date;
-                document.getElementById('confirmTotal').innerText = data.order.total_price.toFixed(2);
-
-                const itemsList = document.getElementById('confirmItems');
-                itemsList.innerHTML = '';
-                data.order.items.forEach(item => {
-                    const li = document.createElement('li');
-                    li.innerText = `${item.description} - כמות: ${item.quantity}, מחיר: ${item.price} ₪`;
-                    itemsList.appendChild(li);
-                });
-
-                document.getElementById('orderConfirmation').style.display = 'block';
-                document.getElementById('orderForm').reset();
-            })
-            .catch(error => console.error('Error:', error));
+            const itemsTable = document.getElementById('confirmItems');
+            itemsTable.innerHTML = '';
+            items.forEach(item => {
+                const row = `<tr>
+                    <td>${item.description}</td>
+                    <td>${item.quantity}</td>
+                    <td>${item.price} ₪</td>
+                    <td>${(item.quantity * item.price).toFixed(2)} ₪</td>
+                </tr>`;
+                itemsTable.innerHTML += row;
+            });
         }
     </script>
 </body>
