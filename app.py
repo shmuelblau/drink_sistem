@@ -3,33 +3,83 @@ import json
 import os
 from datetime import datetime
 from collections import defaultdict
+import requests 
+
 
 app = Flask(__name__)
+
+def get_customer_id(email):
+   
+    api_token="78336597-A905-42AC-9A71-DC03B9A79647"
+    url="https://api.rivhit.co.il/online/RivhitOnlineAPI.svc/Customer.Get"
+    headers = {
+        "Content-Type": "application/json"
+    }
+
+    payload = {
+        "api_token": api_token,
+        "email":email}
+   
+    response = requests.post(url, json=payload, headers=headers)
+    response= response.json()
+    customer_id=response["data"]["customer_id"]
+    
+    
+
+    return customer_id
+
+def send_order_to_rivhit(order_data):
+   
+    api_token="78336597-A905-42AC-9A71-DC03B9A79647"
+    url = "https://api.rivhit.co.il/online/RivhitOnlineAPI.svc/Document.New"
+    
+  
+    customer_id=get_customer_id(order_data["email"])
+    
+   
+
+
+
+   
+    payload = {
+        "api_token": api_token,
+        "document_type": 6,  # סוג המסמך (למשל חשבונית מס)
+        "customer_id":customer_id ,  # ניתן לשנות אם יש לקוח רשום במערכת
+        "email_to": order_data["email"],
+        "email_dcc": order_data["email"],
+        #"customer_create":True,
+        #"mail_by_find":True,
+        "items": [
+            {
+                "catalog_number": item["product_id"],
+                "quantity": item["quantity"],
+                "price_nis": item["price"]
+            }
+            for item in order_data["items"]
+        ]
+    }
+   
+    headers = {
+        "Content-Type": "application/json"
+    }
+    
+    response = requests.post(url, json=payload, headers=headers)
+    
+    print (response)
+    return response.json()  # מחזיר את התגובה של ה-API
+
+
 
 # קריאת רשימת המוצרים מקובץ JSON
 def load_products():
     with open('products.json', 'r', encoding='utf-8') as f:
         return json.load(f)['products']
 
-# פונקציה לטעינת ההזמנות מקובץ JSON
-def load_orders():
-    if not os.path.exists('orders.json'):
-        return []
-    with open('orders.json', 'r', encoding='utf-8') as f:
-        data = json.load(f)
-        if not isinstance(data, dict) or 'orders' not in data:
-            return []
-        for order in data['orders']:
-            order['order_items'] = order.pop('items', [])  # שינוי שם המפתח
-        return data['orders']
+
 
 
 # פונקציה לשמירת הזמנות לקובץ JSON
-def save_order(order):
-    orders = load_orders()
-    orders.append(order)
-    with open('orders.json', 'w', encoding='utf-8') as f:
-        json.dump({"orders": orders}, f, ensure_ascii=False, indent=4)
+
 
 @app.route('/')
 def home():
@@ -50,20 +100,17 @@ def order():
             return jsonify({'error': 'Invalid JSON'}), 400
 
         # הוספת תאריך להזמנה
-        order_data['order_date'] = datetime.now().strftime('%Y-%m-%d')
+       
+        print(order_data)
 
-        # שמירת ההזמנה לקובץ JSON
-        save_order(order_data)
+        #יצירת הצעת מחיר 
+        response = send_order_to_rivhit(order_data)
 
-        return jsonify({'message': 'ההזמנה נוספה בהצלחה!', 'order': order_data}), 201
+        return render_template('order.html',response=response)
 
     except Exception as e:
-        return jsonify({'error': str(e)}), 500
+        return render_template('eror.html',response="נכשל")
 
-@app.route('/orders')
-def orders_page():
-    orders = load_orders()
-    return render_template('orders.html', orders=orders)
 
 
 

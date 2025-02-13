@@ -46,39 +46,125 @@
             "customer_name": "שמואל",
             "order_date": "2025-02-13",
             "total_price": 1557,
-            "order_items": [
-                {
-                    "product_id": "W001",
-                    "description": "אקווה פנה מים קטן, בקבוק 250 מ\"ל, 24 יח' במארז",
-                    "quantity": 4,
-                    "price": 172
-                },
-                {
-                    "product_id": "PZ001",
-                    "description": "מיץ פז סליק, פחית 330 מ\"ל, 24 יח' במארז",
-                    "quantity": 8,
-                    "price": 79
-                },
-                {
-                    "product_id": "J004",
-                    "description": "ג'אמפ תות בננה זכוכית, בקבוק 330 מ\"ל, 24 יח' במארז",
-                    "quantity": 3,
-                    "price": 79
-                }
-            ]
+            "order_items": []
         },
         {
             "customer_name": "4",
             "order_date": "2025-02-13",
+            "total_price": 471,
+            "order_items": []
+        },
+        {
+            "email": "a0528075188@gmail.com",
+            "date": "2025-02-13",
+            "total": "516.00",
+            "order_date": "2025-02-13",
+            "order_items": []
+        },
+        {
+            "email": "a0528075188@gmail.com",
+            "date": "2025-02-13",
+            "total": "916.00",
+            "order_date": "2025-02-13",
+            "order_items": []
+        },
+        {
+            "email": "a0528075188@gmail.com",
+            "date": "2025-02-13",
+            "total": "2016.00",
+            "order_date": "2025-02-13",
+            "order_items": []
+        },
+        {
+            "email": "a0528075188@gmail.com",
+            "date": "2025-02-13",
+            "total": "329.00",
+            "order_date": "2025-02-13",
+            "order_items": []
+        },
+        {
+            "email": "a0528075188@gmail.com",
+            "date": "2025-02-13",
+            "total": "344.00",
+            "order_date": "2025-02-13",
+            "order_items": []
+        },
+        {
+            "email": "a0528075188@gmail.com",
+            "date": "2025-02-13",
+            "total": "516.00",
+            "order_date": "2025-02-13",
+            "order_items": []
+        },
+        {
+            "email": "a0528075188@gmail.com",
+            "date": "2025-02-13",
+            "total": "737.00",
+            "order_date": "2025-02-13",
+            "order_items": []
+        },
+        {
+            "email": "a0528075188@gmail.com",
+            "date": "2025-02-13",
+            "total": "319.00",
+            "order_date": "2025-02-13",
+            "order_items": []
+        },
+        {
+            "email": "a0528075188@gmail.com",
+            "date": "2025-02-13",
+            "total": "536.00",
+            "order_date": "2025-02-13",
+            "order_items": []
+        },
+        {
+            "email": "a0528075188@gmail.com",
+            "date": "2025-02-13",
+            "total": "688.00",
+            "order_date": "2025-02-13",
+            "order_items": []
+        },
+        {
+            "email": "a0528075188@gmail.com",
+            "date": "2025-02-13",
+            "total": "516.00",
+            "order_date": "2025-02-13",
+            "order_items": []
+        },
+        {
+            "email": "a0528075188@gmail.com",
+            "date": "2025-02-13",
+            "total": "516.00",
+            "order_date": "2025-02-13",
+            "order_items": []
+        },
+        {
+            "email": "a0528075188@gmail.com",
+            "date": "2025-02-13",
+            "total": "516.00",
+            "order_date": "2025-02-13",
+            "order_items": [
+                {
+                    "product_id": "8",
+                    "description": "אקווה פנה מים קטן, בקבוק 250 מ\"ל, 24 יח' במארז",
+                    "quantity": 3,
+                    "price": 172
+                }
+            ]
+        },
+        {
+            "email": "a0528075188@gmail.com",
+            "date": "2025-02-13",
             "items": [
                 {
-                    "product_id": "B002",
-                    "description": "בירה היינקן, בקבוק 330 מ\"ל, 24 יח' במארז",
+                    "product_id": "8",
+                    "description": "אקווה פנה מים קטן, בקבוק 250 מ\"ל, 24 יח' במארז",
                     "quantity": 3,
-                    "price": 157
+                    "price": 172
                 }
             ],
-            "total_price": 471
+            "total": "516.00",
+            "order_date": "2025-02-13"
         }
     ]
 }

@@ -3,30 +3,61 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>אישור הזמנה</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <title>מסמך חשבונית</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            direction: rtl;
+            text-align: right;
+            margin: 20px;
+            background-color: #f9f9f9;
+        }
+        .container {
+            max-width: 600px;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #333;
+        }
+        .info {
+            margin: 10px 0;
+            padding: 10px;
+            background: #f1f1f1;
+            border-radius: 5px;
+        }
+        .btn {
+            display: inline-block;
+            padding: 10px 15px;
+            margin-top: 10px;
+            background: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+        .btn:hover {
+            background: #0056b3;
+        }
+    </style>
 </head>
 <body>
-    <h1>אישור הזמנה</h1>
-    <table>
-        <thead>
-            <tr>
-                <th>מוצר</th>
-                <th>כמות</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for product in products %}
-            {% set qty = order_data.get('product_' + product.product_id, ['0'])[0] | int %}
-            {% if qty > 0 %}
-            <tr>
-                <td>{{ product.description }}</td>
-                <td>{{ qty }}</td>
-            </tr>
-            {% endif %}
-            {% endfor %}
-        </tbody>
-    </table>
-    <a href="/">חזור לדף הראשי</a>
+    <div class="container">
+        <h1>פרטי המסמך</h1>
+
+        {% if response.get("data") %}
+            <div class="info"><strong>סוג מסמך:</strong> הצעת מחיר</div>
+            <div class="info"><strong>מספר מסמך:</strong> {{ response["data"].get("document_number", "לא נמצא") }}</div>
+            
+        
+            
+            <a href={{ response['data'].get('document_link') }} class="btn" download>
+                הורדת המסמך
+            </a>
+        {% else %}
+            <div class="info" style="color: red;">אירעה שגיאה בשליחת ההזמנה</div>
+        {% endif %}
+    </div>
 </body>
 </html>
