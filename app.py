@@ -104,7 +104,7 @@ def order():
         print(order_data)
 
         #יצירת הצעת מחיר 
-        response = send_order_to_rivhit(order_data)
+        response = send_order_to_rivhit(order_data).json()
 
         return render_template('order.html',response=response)
 
