@@ -78,23 +78,31 @@ def send_order_to_rivhit(order_data):
 def load_products():
     with open('products.json', 'r', encoding='utf-8') as f:
         return json.load(f)['products']
-
+# קריאת רשימת המוצרים מהתוכנה JSON
 def products_from_rivhit():
+
+    categories = {"קוקה קולה": 1, "טמפו": 2,"בירה ויין":3,"משקאות אנרגיה":4,"מים":5,"שוופס":6,"פריגת ותפוזינה":7,"פיוז טי":8,"ספרינג":9,"ג'אמפ":10}
+    items={}
     api_token="78336597-A905-42AC-9A71-DC03B9A79647"
     url = " https://api.rivhit.co.il/online/RivhitOnlineAPI.svc/Item.List"
     
 
-    payload = {
-        "api_token": api_token,
-        "item_group_id": 1
-    }
-   
-    headers = {
-        "Content-Type": "application/json"
-    }
+    for category_name, category_id in categories.items():
+        payload = {
+            "api_token": api_token,
+            "item_group_id": category_id
+        }
+
+        headers = {
+            "Content-Type": "application/json"
+        }
+
+        respons = requests.post(url, json=payload, headers=headers).json()
+
+        respons=respons['data']["item_list"]
+        items[category_name]= respons
+    print(type(items))
     
-    response = requests.post(url, json=payload, headers=headers).json()
-    items=response['data']["item_list"]
     return items 
 
 
@@ -108,10 +116,9 @@ def home():
 
     # קיבוץ מוצרים לפי קטגוריות
     categorized_products = defaultdict(list)
-    for product in products:
-        categorized_products["מעודכן"].append(product)
+  
 
-    return render_template('index.html', categorized_products=categorized_products)
+    return render_template('index.html', categorized_products=products)
 
 @app.route('/order', methods=['POST'])
 def order():
