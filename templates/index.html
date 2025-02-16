@@ -15,6 +15,7 @@
             padding: 5px;
             font-weight: bold;
             border-radius: 5px;}
+
          body {
             font-family: Arial, sans-serif;
             text-align: center;
@@ -160,7 +161,7 @@
     <div class="container">
         <img src="{{ url_for('static', filename='logo.png') }}" alt="לוגו החברה" class="logo">
         <form id="orderForm">
-            <input type="email" id="customer_email" placeholder="האימייל שלך" required>
+            <input type="email" id="customer_email" placeholder="האימייל שלך" required autocomplete="email">
             <h1>רשימת מוצרים</h1>
             <div class="categories">
                 {% for category, products in categorized_products.items() %}
@@ -180,24 +181,24 @@
                             </thead>
                             <tbody>
                                 {% for product in products %}
-<tr>
-    <td style="position: relative;">
-        {{ product.item_name }}
-        {% if product.quantity | int <= 0 %}
-            <span class="out-of-stock">אזל מהמלאי</span>
-        {% endif %}
-    </td>
-    <td>{{ product.sale_nis | int }} ₪</td>
-    <td>
-        <input type="number" name="product_{{ product.item_id }}" value="0" min="0" 
-               max="{{ product.quantity }}"  
-               data-id="{{ product.item_id }}" 
-               data-description="{{ product.item_name }}" 
-               data-price="{{ product.sale_nis }}"
-               {% if product.quantity | int <= 0 %} disabled {% endif %}>
-    </td>
-</tr>
-{% endfor %}
+                                    <tr>
+                                        <td style="position: relative;">
+                                            {{ product.item_name }}
+                                            {% if product.quantity | int <= 0 %}
+                                                <span class="out-of-stock">אזל מהמלאי</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>{{ product.sale_nis | int }} ₪</td>
+                                        <td>
+                                            <input type="number" name="product_{{ product.item_id }}" value="0" min="0" 
+                                                max="{{ product.quantity }}"  
+                                                data-id="{{ product.item_id }}" 
+                                                data-description="{{ product.item_name }}" 
+                                                data-price="{{ product.sale_nis }}"
+                                                {% if product.quantity | int <= 0 %} disabled {% endif %}>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
 
                             </tbody>
                         </table>
@@ -205,64 +206,117 @@
                 </div>
                 {% endfor %}
             </div>
+
+            <h2>תצוגה מקדימה של ההזמנה</h2>
+            <table id="orderPreview">
+                <thead>
+                    <tr>
+                        <th>תיאור</th>
+                        <th>כמות</th>
+                        <th>מחיר ליחידה</th>
+                        <th>סה"כ</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+            <h3 id="totalPrice">סה"כ: 0 ₪</h3>
+
             <button type="button" onclick="submitOrder()">שלח הזמנה</button>
         </form>
     </div>
     <script>
         
-        function submitOrder() {
-            const customerEmail = document.getElementById('customer_email').value;
-            const orderDate = new Date().toISOString().split('T')[0];
-            const items = [];
-            let totalPrice = 0;
-    
-            if (!customerEmail.includes('@')) {
-                alert('נא להזין אימייל תקין');
-                return;
-            }
-    
-            document.querySelectorAll('input[type=number]').forEach(input => {
-                const quantity = parseInt(input.value, 10);
-                if (quantity > 0) {
-                    const product = {
-                        product_id: input.getAttribute('data-id'),
-                        description: input.getAttribute('data-description'),
-                        quantity: quantity,
-                        price: parseFloat(input.getAttribute('data-price'))
-                    };
-                    totalPrice += product.quantity * product.price;
-                    items.push(product);
-                }
-            });
-    
-            if (items.length === 0) {
-                alert('יש לבחור לפחות מוצר אחד');
-                return;
-            }
-    
-            const orderData = {
-                email: customerEmail,
-                date: orderDate,
-                items: items,
-                total: totalPrice.toFixed(2)
-            };
-    
-            fetch('/order', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(orderData)
-            })
-            .then(response => response.text())  // קבלת תגובת HTML
-            .then(html => {
-                document.open();
-                document.write(html);  // החלפת התוכן של הדף ב־order.html
-                document.close();
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('אירעה שגיאה בשליחת ההזמנה');
-            });
+        document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('input[type=number]').forEach(input => {
+        input.addEventListener('input', updateOrderPreview);
+    });
+});
+
+function updateOrderPreview() {
+    const orderPreviewTable = document.getElementById('orderPreview').querySelector('tbody');
+    const totalPriceElement = document.getElementById('totalPrice');
+    orderPreviewTable.innerHTML = ''; // נקה את הטבלה לפני שממלאים אותה מחדש
+
+    let totalPrice = 0;
+
+    document.querySelectorAll('input[type=number]').forEach(input => {
+        const quantity = parseInt(input.value, 10);
+        if (quantity > 0) {
+            const description = input.getAttribute('data-description');
+            const price = parseFloat(input.getAttribute('data-price'));
+            const total = price * quantity;
+
+            totalPrice += total;
+
+            // יצירת שורה חדשה בטבלה
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${description}</td>
+                <td>${quantity}</td>
+                <td>${price.toFixed(2)} ₪</td>
+                <td>${total.toFixed(2)} ₪</td>
+            `;
+            orderPreviewTable.appendChild(row);
         }
+    });
+
+    totalPriceElement.textContent = `סה"כ: ${totalPrice.toFixed(2)} ₪`;
+}
+
+function submitOrder() {
+    const customerEmail = document.getElementById('customer_email').value;
+    if (!customerEmail.includes('@')) {
+        alert('נא להזין אימייל תקין');
+        return;
+    }
+
+    const orderDate = new Date().toISOString().split('T')[0];
+    const items = [];
+    let totalPrice = 0;
+
+    document.querySelectorAll('input[type=number]').forEach(input => {
+        const quantity = parseInt(input.value, 10);
+        if (quantity > 0) {
+            const product = {
+                product_id: input.getAttribute('data-id'),
+                description: input.getAttribute('data-description'),
+                quantity: quantity,
+                price: parseFloat(input.getAttribute('data-price'))
+            };
+            totalPrice += product.quantity * product.price;
+            items.push(product);
+        }
+    });
+
+    if (items.length === 0) {
+        alert('יש לבחור לפחות מוצר אחד');
+        return;
+    }
+
+    const orderData = {
+        email: customerEmail,
+        date: orderDate,
+        items: items,
+        total: totalPrice.toFixed(2)
+    };
+
+    fetch('/order', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(orderData)
+    })
+    .then(response => response.text())  // קבלת תגובת HTML
+    .then(html => {
+        document.open();
+        document.write(html);  // החלפת התוכן של הדף ב־order.html
+        document.close();
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('אירעה שגיאה בשליחת ההזמנה');
+    });
+}
+
         function toggleCategory(header) {
             const content = header.nextElementSibling;
             const icon = header.querySelector('.toggle-icon');

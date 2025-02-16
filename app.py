@@ -9,24 +9,27 @@ import requests
 app = Flask(__name__)
 
 def get_customer_id(email):
-   
-    api_token="78336597-A905-42AC-9A71-DC03B9A79647"
-    url="https://api.rivhit.co.il/online/RivhitOnlineAPI.svc/Customer.Get"
-    headers = {
-        "Content-Type": "application/json"
-    }
+   try:
+            api_token="78336597-A905-42AC-9A71-DC03B9A79647"
+            url="https://api.rivhit.co.il/online/RivhitOnlineAPI.svc/Customer.Get"
+            headers = {
+                "Content-Type": "application/json"
+            }
 
-    payload = {
-        "api_token": api_token,
-        "email":email}
-   
-    response = requests.post(url, json=payload, headers=headers)
-    response= response.json()
-    customer_id=response["data"]["customer_id"]
-    
-    
+            payload = {
+                "api_token": api_token,
+                "email":email}
+        
+            response = requests.post(url, json=payload, headers=headers)
+            response= response.json()
+            customer_id=response["data"]["customer_id"]
+            
+            
 
-    return customer_id
+            return customer_id
+   
+   except:
+       return 
 
 def send_order_to_rivhit(order_data):
    
@@ -35,6 +38,7 @@ def send_order_to_rivhit(order_data):
     
   
     customer_id=get_customer_id(order_data["email"])
+    
     
    
 
