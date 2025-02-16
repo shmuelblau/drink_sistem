@@ -43,7 +43,7 @@ def send_order_to_rivhit(order_data):
    
     payload = {
         "api_token": api_token,
-        "document_type": 6,  # סוג המסמך (למשל חשבונית מס)
+        "document_type": 4,  # סוג המסמך (למשל חשבונית מס)
         "customer_id":customer_id ,  # ניתן לשנות אם יש לקוח רשום במערכת
         "email_to": order_data["email"],
         "email_dcc": order_data["email"],
@@ -51,7 +51,7 @@ def send_order_to_rivhit(order_data):
         #"mail_by_find":True,
         "items": [
             {
-                "catalog_number": item["product_id"],
+                "item_id": item["product_id"],
                 "quantity": item["quantity"],
                 "price_nis": item["price"]
             }
@@ -62,10 +62,10 @@ def send_order_to_rivhit(order_data):
     headers = {
         "Content-Type": "application/json"
     }
-    
+    print(2)
     response = requests.post(url, json=payload, headers=headers)
+    print(3)
     
-    print (response)
     return response.json()  # מחזיר את התגובה של ה-API
 
 
@@ -75,20 +75,37 @@ def load_products():
     with open('products.json', 'r', encoding='utf-8') as f:
         return json.load(f)['products']
 
+def products_from_rivhit():
+    api_token="78336597-A905-42AC-9A71-DC03B9A79647"
+    url = " https://api.rivhit.co.il/online/RivhitOnlineAPI.svc/Item.List"
+    
+
+    payload = {
+        "api_token": api_token,
+        "item_group_id": 1
+    }
+   
+    headers = {
+        "Content-Type": "application/json"
+    }
+    
+    response = requests.post(url, json=payload, headers=headers).json()
+    items=response['data']["item_list"]
+    return items 
 
 
 
-# פונקציה לשמירת הזמנות לקובץ JSON
+
 
 
 @app.route('/')
 def home():
-    products = load_products()
+    products = products_from_rivhit()
 
     # קיבוץ מוצרים לפי קטגוריות
     categorized_products = defaultdict(list)
     for product in products:
-        categorized_products[product["category"]].append(product)
+        categorized_products["מעודכן"].append(product)
 
     return render_template('index.html', categorized_products=categorized_products)
 
@@ -104,7 +121,9 @@ def order():
         print(order_data)
 
         #יצירת הצעת מחיר 
-        response = send_order_to_rivhit(order_data).json()
+        response = send_order_to_rivhit(order_data)
+        print(response)
+        print(1)
 
         return render_template('order.html',response=response)
 

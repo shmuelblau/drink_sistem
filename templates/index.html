@@ -6,6 +6,15 @@
     <title>רשימת מוצרים</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
     <style>
+        .out-of-stock {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: red;
+            color: white;
+            padding: 5px;
+            font-weight: bold;
+            border-radius: 5px;}
          body {
             font-family: Arial, sans-serif;
             text-align: center;
@@ -171,21 +180,25 @@
                             </thead>
                             <tbody>
                                 {% for product in products %}
-                                {% set parts = product.description.split(', ') %}
-                                <tr>
-                                    <td>
-                                        <div class="product-description">{{ parts[0] }}</div>
-                                        <div class="product-details">{{ parts[1] if parts|length > 1 else '' }} {{ parts[2] if parts|length > 2 else '' }}</div>
-                                    </td>
-                                    <td>{{ product.price | int }} ₪</td>
-                                    <td>
-                                        <input type="number" name="product_{{ product.product_id }}" value="0" min="0" 
-                                               data-id="{{ product.product_id }}" 
-                                               data-description="{{ product.description }}" 
-                                               data-price="{{ product.price }}">
-                                    </td>
-                                </tr>
-                                {% endfor %}
+<tr>
+    <td style="position: relative;">
+        {{ product.item_name }}
+        {% if product.quantity | int <= 0 %}
+            <span class="out-of-stock">אזל מהמלאי</span>
+        {% endif %}
+    </td>
+    <td>{{ product.sale_nis | int }} ₪</td>
+    <td>
+        <input type="number" name="product_{{ product.item_id }}" value="0" min="0" 
+               max="{{ product.quantity }}"  
+               data-id="{{ product.item_id }}" 
+               data-description="{{ product.item_name }}" 
+               data-price="{{ product.sale_nis }}"
+               {% if product.quantity | int <= 0 %} disabled {% endif %}>
+    </td>
+</tr>
+{% endfor %}
+
                             </tbody>
                         </table>
                     </div>
