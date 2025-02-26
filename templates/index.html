@@ -43,16 +43,18 @@
             background-color: white;
             text-align: right;
             margin-bottom: 10px;
+            
         }
         .category-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             padding: 10px;
-            background-color: #bc121a;
+            background-color: #ee3740;
             color: white;
             border-radius: 5px;
             cursor: pointer;
+            height: 40px;
         }
         .toggle-icon {
             font-size: 20px;
@@ -164,6 +166,13 @@
     <div class="container">
         <img src="{{ url_for('static', filename='logo.png') }}" alt="לוגו החברה" class="logo">
         <form id="orderForm">
+            <h2>הקלד את כתובת המייל הרשומה במערכת</h2>
+            <a href="https://wa.me/972528075188?text=  היי ברצוני להרשם למערכת" class="btn whatsapp">📞  להרשמה  בוואטסאפ</a>
+
+            <br><br>
+
+
+          
             <input type="email" id="customer_email" placeholder="האימייל שלך" required autocomplete="email">
             <h1>רשימת מוצרים</h1>
             <div class="categories">
@@ -210,7 +219,7 @@
                 {% endfor %}
             </div>
 
-            <h2>תצוגה מקדימה של ההזמנה</h2>
+            <h2>  סיכום הזמנה  </h2>
             <table id="orderPreview">
                 <thead>
                     <tr>
@@ -268,6 +277,8 @@ function updateOrderPreview() {
 
 function submitOrder() {
     const customerEmail = document.getElementById('customer_email').value;
+    const orderButton = document.querySelector('button[type=button]');
+
     if (!customerEmail.includes('@')) {
         alert('נא להזין אימייל תקין');
         return;
@@ -296,6 +307,10 @@ function submitOrder() {
         return;
     }
 
+    // נעל את הכפתור ושנה את הטקסט שלו
+    orderButton.disabled = true;
+    orderButton.textContent = 'הזמנה מתבצעת...';
+
     const orderData = {
         email: customerEmail,
         date: orderDate,
@@ -308,17 +323,20 @@ function submitOrder() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(orderData)
     })
-    .then(response => response.text())  // קבלת תגובת HTML
+    .then(response => response.text())
     .then(html => {
         document.open();
-        document.write(html);  // החלפת התוכן של הדף ב־order.html
+        document.write(html);
         document.close();
     })
     .catch(error => {
         console.error('Error:', error);
         alert('אירעה שגיאה בשליחת ההזמנה');
+        orderButton.disabled = false;
+        orderButton.textContent = 'שלח הזמנה';
     });
 }
+
 
         function toggleCategory(header) {
             const content = header.nextElementSibling;

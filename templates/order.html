@@ -3,60 +3,69 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>מסמך חשבונית</title>
+    <title>אישור הזמנה</title>
     <style>
         body {
             font-family: Arial, sans-serif;
             direction: rtl;
-            text-align: right;
-            margin: 20px;
-            background-color: #f9f9f9;
+            text-align: center;
+            margin: 0;
+            background-color: #f5f5f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
         }
         .container {
-            max-width: 600px;
+            max-width: 500px;
             background: white;
-            padding: 20px;
+            padding: 25px;
             border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
         }
         h1 {
-            color: #333;
+            color: #28a745;
         }
-        .info {
-            margin: 10px 0;
-            padding: 10px;
-            background: #f1f1f1;
-            border-radius: 5px;
+        .error-message {
+            color: red;
+            font-size: 18px;
+            font-weight: bold;
+            margin-top: 15px;
         }
         .btn {
-            display: inline-block;
-            padding: 10px 15px;
-            margin-top: 10px;
+            display: block;
+            padding: 12px;
+            margin: 15px auto;
+            width: 80%;
             background: #007bff;
             color: white;
             text-decoration: none;
+            font-size: 16px;
             border-radius: 5px;
+            transition: background 0.3s;
         }
         .btn:hover {
             background: #0056b3;
+        }
+        .whatsapp {
+            background: #25D366;
+        }
+        .whatsapp:hover {
+            background: #1DA851;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>פרטי המסמך</h1>
-
         {% if response.get("data") %}
-            <div class="info"><strong>סוג מסמך:</strong> הצעת מחיר</div>
-            <div class="info"><strong>מספר מסמך:</strong> {{ response["data"].get("document_number", "לא נמצא") }}</div>
-            
-        
-            
-            <a href={{ response['data'].get('document_link') }} class="btn" download>
-                הורדת המסמך
-            </a>
+            <h1>✅ ההזמנה התקבלה בהצלחה!</h1>
+            <p>תוכל להוריד את המסמך שלך כאן:</p>
+            <a href="{{ response['data'].get('document_link') }}" class="btn" download>📥 הורדת המסמך</a>
+            <a href="https://wa.me/972528075188?text={{ 'אני צריך עזרה עם ההזמנה מספר ' + response['data'].get('document_number') | string }}" class="btn whatsapp">📞 ליצירת קשר בוואטסאפ לגבי ההזמנה</a>
         {% else %}
-            <div class="info" style="color: red;">אירעה שגיאה בשליחת ההזמנה</div>
+
+        
+            <div class="error-message">❌ אירעה שגיאה בשליחת ההזמנה</div>
         {% endif %}
     </div>
 </body>

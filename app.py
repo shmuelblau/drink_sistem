@@ -81,7 +81,7 @@ def load_products():
 # קריאת רשימת המוצרים מהתוכנה JSON
 def products_from_rivhit():
 
-    categories = {"קוקה קולה": 1, "טמפו": 2,"בירה ויין":3,"משקאות אנרגיה":4,"מים":5,"שוופס":6,"פריגת ותפוזינה":7,"פיוז טי":8,"ספרינג":9,"ג'אמפ":10}
+    categories = {"מבצעים מיוחדים":11,"קוקה קולה": 1, "טמפו": 2,"בירה ויין":3,"משקאות אנרגיה":4,"מים":5,"שוופס":6,"פריגת ותפוזינה":7,"פיוז טי":8,"ספרינג":9,"ג'אמפ":10}
     items={}
     api_token="78336597-A905-42AC-9A71-DC03B9A79647"
     url = " https://api.rivhit.co.il/online/RivhitOnlineAPI.svc/Item.List"
@@ -127,7 +127,7 @@ def order():
         if not order_data:
             return jsonify({'error': 'Invalid JSON'}), 400
 
-        # הוספת תאריך להזמנה
+        
        
         print(order_data)
 
@@ -139,6 +139,8 @@ def order():
         return render_template('order.html',response=response)
 
     except Exception as e:
+        print(e)
+        print(111111111111111)
         return render_template('eror.html',response="נכשל")
 
 
