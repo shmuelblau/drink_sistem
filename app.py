@@ -141,7 +141,7 @@ def order():
     except Exception as e:
         print(e)
         print(111111111111111)
-        return render_template('eror.html',response="נכשל")
+        return render_template('eror.html',response="הזמנה נכשלה")
 
 
 

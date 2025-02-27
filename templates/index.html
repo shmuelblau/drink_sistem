@@ -160,6 +160,19 @@
             font-size: 12px;
             color: gray;
         }
+        /* מציג את החיצים (spinners) עבור שדות מספריים במובייל */
+input[type=number] {
+    -moz-appearance: textfield;
+}
+
+/* החזרת החיצים ב-iOS (Safari) */
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+    -webkit-appearance: auto;
+    appearance: auto;
+    margin: 0;
+}
+
     </style>
 </head>
 <body>
@@ -167,7 +180,7 @@
         <img src="{{ url_for('static', filename='logo.png') }}" alt="לוגו החברה" class="logo">
         <form id="orderForm">
             <h2>הקלד את כתובת המייל הרשומה במערכת</h2>
-            <a href="https://wa.me/972528075188?text=  היי ברצוני להרשם למערכת" class="btn whatsapp">📞  להרשמה  בוואטסאפ</a>
+            <a href="https://wa.me/97258/006077?text=  היי ברצוני להרשם למערכת" class="btn whatsapp">📞  להרשמה  בוואטסאפ</a>
 
             <br><br>
 
@@ -203,7 +216,8 @@
                                         <td>{{ product.sale_nis | int }} ₪</td>
                                         <td>
                                             <input type="number" name="product_{{ product.item_id }}" value="0" min="0" 
-                                                max="{{ product.quantity }}"  
+                                                max="{{ product.quantity }}" 
+                                                step="1" 
                                                 data-id="{{ product.item_id }}" 
                                                 data-description="{{ product.item_name }}" 
                                                 data-price="{{ product.sale_nis }}"
