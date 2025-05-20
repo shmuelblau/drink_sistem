@@ -174,7 +174,14 @@
       margin-top: 10px;
       font-size: 20px;
     }
-    button#submitOrder {
+    .balance-positive {
+  color: green;
+}
+.balance-negative {
+  color: red;
+}
+
+    button#submitOrderButton {
       display: block;
       margin: 20px auto 0;
       background-color: #007bff;
@@ -258,7 +265,7 @@
         <tbody></tbody>
       </table>
       <h3 id="totalPrice">סה"כ: 0 ₪</h3>
-      <button type="button" id="submitOrder" onclick="submitOrder()">שלח הזמנה</button>
+      <button type="button" id="submitOrderButton" onclick="submitOrder()">שלח הזמנה</button>
     </form>
   </div>
   <script>
@@ -305,29 +312,45 @@
     }
 
     function checkBalance() {
-      const email = document.getElementById('customer_email').value;
-      if (!email.includes('@')) {
-        alert('נא להזין אימייל תקין');
-        return;
-      }
-      fetch('/get_balance', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: email })
-      })
-      .then(response => response.json())
-      .then(data => {
-        document.getElementById('balanceDisplay').textContent = `יתרה: ${data.balance} ₪`;
-      })
-      .catch(error => {
-        console.error('Error fetching balance:', error);
-        alert('אירעה שגיאה בבדיקת היתרה');
-      });
+  const email = document.getElementById('customer_email').value;
+  if (!email.includes('@')) {
+    alert('נא להזין אימייל תקין');
+    return;
+  }
+
+  fetch('/get_balance', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email: email })
+  })
+  .then(response => response.json())
+  .then(data => {
+    const el = document.getElementById('balanceDisplay');
+    const balance = parseFloat(data.balance);
+
+    // עדכון הטקסט
+    el.textContent = `יתרה: ${balance} ₪`;
+
+    // הורדת מחלקות צבע קודמות
+    el.classList.remove('balance-positive', 'balance-negative');
+
+    // הוספת המחלקה המתאימה
+    if (balance >= 0) {
+      el.classList.add('balance-positive');
+    } else {
+      el.classList.add('balance-negative');
     }
+  })
+  .catch(error => {
+    console.error('Error fetching balance:', error);
+    alert('אירעה שגיאה בבדיקת היתרה');
+  });
+}
+
 
     function submitOrder() {
       const customerEmail = document.getElementById('customer_email').value;
-      const orderButton = document.getElementById('submitOrder');
+      const orderButton = document.getElementById('submitOrderButton');
 
       if (!customerEmail.includes('@')) {
         alert('נא להזין אימייל תקין');

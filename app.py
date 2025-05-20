@@ -25,12 +25,14 @@ def get_balance_for(email):
         response = requests.post(url, json=payload, headers=headers)
         response= response.json()
         balance = response["data"]["balance"]
+
+
             
             
 
            
 
-        return balance
+        return int (balance) *-1
     
     except:
         return"לא ניתן להציג"
