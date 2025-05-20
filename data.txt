@@ -1,0 +1,28 @@
+.product-card {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      background-color: #fff;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      margin-bottom: 10px;
+      position: relative;
+      align-items: center;
+    }
+    .product-field {
+      flex: 1 1 30%;
+      display: flex;
+      flex-direction: column;
+    }
+    .out-of-stock {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      background: #c62828;
+      color: white;
+      font-size: 12px;
+      padding: 4px 8px;
+      border-radius: 4px;
+      transform: rotate(-15deg);
+    }

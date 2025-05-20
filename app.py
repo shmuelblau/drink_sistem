@@ -8,6 +8,34 @@ import requests
 
 app = Flask(__name__)
 
+
+def get_balance_for(email):
+
+    try:
+        api_token="78336597-A905-42AC-9A71-DC03B9A79647"
+        url="https://api.rivhit.co.il/online/RivhitOnlineAPI.svc/Customer.Get"
+        headers = {
+                "Content-Type": "application/json"
+            }
+
+        payload = {
+                "api_token": api_token,
+                "email":email}
+        
+        response = requests.post(url, json=payload, headers=headers)
+        response= response.json()
+        balance = response["data"]["balance"]
+            
+            
+
+           
+
+        return balance
+    
+    except:
+        return"לא ניתן להציג"
+
+
 def get_customer_id(email):
    try:
             api_token="78336597-A905-42AC-9A71-DC03B9A79647"
@@ -101,7 +129,7 @@ def products_from_rivhit():
 
         respons=respons['data']["item_list"]
         items[category_name]= respons
-    print(type(items))
+    print(items)
     
     return items 
 
@@ -143,7 +171,13 @@ def order():
         print(111111111111111)
         return render_template('eror.html',response="הזמנה נכשלה")
 
-
+@app.route('/get_balance', methods=['POST'])
+def get_balance():
+    data = request.get_json()
+    email = data.get('email')
+    # כאן הקוד שלך שמחשב את היתרה, לדוגמה:
+    balance = get_balance_for(email)
+    return jsonify(balance=balance)
 
 
 if __name__ == '__main__':

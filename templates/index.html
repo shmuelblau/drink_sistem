@@ -1,370 +1,390 @@
 <!DOCTYPE html>
 <html lang="he">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>רשימת מוצרים</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
-    <style>
-        .out-of-stock {
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            background: red;
-            color: white;
-            padding: 0px;
-            font-weight: bold;
-            border-radius: 5px;
-            opacity:0.5;
-            transform: rotate(-15deg); 
-        }
-
-         body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            padding: 20px;
-            background-color: #f8f9fa;
-        }
-        .container {
-            max-width: 900px;
-            margin: auto;
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-        }
-        .logo {
-            max-width: 50%;
-            margin-bottom: 80px;
-        }
-        .category {
-            border-radius: 8px;
-            box-shadow: 2px 2px 5px rgba(0,0,0,0.1);
-            background-color: white;
-            text-align: right;
-            margin-bottom: 10px;
-            
-        }
-        .category-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px;
-            background-color: #ee3740;
-            color: white;
-            border-radius: 5px;
-            cursor: pointer;
-            height: 40px;
-        }
-        .toggle-icon {
-            font-size: 20px;
-            transition: transform 0.3s ease;
-        }
-        .collapsed .toggle-icon {
-            transform: rotate(90deg);
-        }
-        .category-content {
-            display: none;
-            padding: 10px;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 10px;
-        }
-        th, td {
-            border: 1px solid #ddd;
-            padding: 8px;
-            text-align: center;
-        }
-        body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            padding: 20px;
-            background-color: #f8f9fa;
-        }
-        .container {
-            max-width: 900px;
-            margin: auto;
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-        }
-        .logo {
-            max-width: 50%;
-            margin-bottom: 80x;
-        }
-        .categories {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 15px;
-            justify-content: center;
-        }
-        .category {
-            flex: 1;
-            min-width: 300px;
-            padding: 15px;
-            border-radius: 8px;
-            box-shadow: 2px 2px 5px rgba(0,0,0,0.1);
-            background-color: white;
-            text-align: right;
-        }
-        th:nth-child(2), td:nth-child(2) {
-    width: 120px; /* שנה ערך זה לפי הצורך */
-}
-
-        .category h2 {
-            padding: 10px;
-            color: white;
-            text-align: center;
-            border-radius: 5px;
-        }
-        .blue { background-color: #bc121a; }
-        
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 10px;
-        }
-        th, td {
-            border: 1px solid #ddd;
-            padding: 8px;
-            text-align: center;
-        }
-        input[type=number], input[type=email] {
-            width: 50%;
-            padding: 8px;
-            margin-top: 5px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            text-align: center;
-        }
-        button {
-            background-color: #28a745;
-            color: white;
-            border: none;
-            padding: 10px 15px;
-            margin-top: 15px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 16px;
-        }
-        button:hover {
-            background-color: #218838;
-        }
-        .product-description {
-            font-weight: bold;
-        }
-        .product-details {
-            font-size: 12px;
-            color: gray;
-        }
-        /* מציג את החיצים (spinners) עבור שדות מספריים במובייל */
-input[type=number] {
-    -moz-appearance: textfield;
-}
-
-/* החזרת החיצים ב-iOS (Safari) */
-input[type=number]::-webkit-inner-spin-button,
-input[type=number]::-webkit-outer-spin-button {
-    -webkit-appearance: auto;
-    appearance: auto;
-    margin: 0;
-}
-
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>רשימת מוצרים</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}" />
+  <style>
+    /* שיפורים כלליים לעיצוב */
+    body {
+      font-family: "Segoe UI", sans-serif;
+      background-color: #f0f2f5;
+      margin: 0;
+      padding: 0;
+      direction: rtl;
+    }
+    .container {
+      max-width: 960px;
+      margin: 40px auto;
+      background: #fff;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+    .logo {
+      display: block;
+      margin: 0 auto 30px;
+      max-width: 200px;
+    }
+    h1, h2, h3 {
+      color: #333;
+      text-align: center;
+    }
+    .btn.whatsapp {
+      background-color: #25d366;
+      color: white;
+      padding: 10px 16px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: bold;
+      transition: background-color 0.3s;
+      display: inline-block;
+    }
+    .btn.whatsapp:hover {
+      background-color: #1ebc59;
+    }
+    .action-group {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin: 15px 0;
+    }
+    input[type=email] {
+      width: 90%;
+      max-width: 320px;
+      padding: 10px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      text-align: center;
+      font-size: 15px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+    #checkBalanceButton {
+      padding: 10px 16px;
+      border: none;
+      border-radius: 8px;
+      background-color: #007bff;
+      color: white;
+      cursor: pointer;
+      font-size: 15px;
+      transition: background-color 0.3s;
+    }
+    #checkBalanceButton:hover {
+      background-color: #0056b3;
+    }
+    #balanceContainer {
+      text-align: center;
+      margin-bottom: 20px;
+      font-size: 16px;
+      color: #333;
+    }
+    /* הקוד הקיים להמשך העיצוב */
+    .categories {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    .category {
+      background: #fafafa;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    }
+    .category-header {
+      background-color: #d32f2f;
+      color: white;
+      padding: 12px 20px;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 18px;
+    }
+    .toggle-icon {
+      font-size: 20px;
+    }
+    .category-content {
+      display: none;
+      padding: 15px;
+    }
+    .product-card {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      background-color: #fff;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      margin-bottom: 10px;
+      position: relative;
+      align-items: center;
+    }
+    .product-field {
+      flex: 1 1 30%;
+      display: flex;
+      flex-direction: column;
+    }
+    .product-label {
+      font-weight: bold;
+      color: #333;
+    }
+    .product-value {
+      margin-bottom: 5px;
+    }
+    input[type=number] {
+      width: 100%;
+      padding: 8px;
+      margin-top: 5px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      text-align: center;
+      font-size: 16px;
+      appearance: number-input;
+    }
+    input[type=number]::-webkit-inner-spin-button,
+    input[type=number]::-webkit-outer-spin-button {
+      -webkit-appearance: auto;
+    }
+    .out-of-stock {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      background: #c62828;
+      color: white;
+      font-size: 12px;
+      padding: 4px 8px;
+      border-radius: 4px;
+      transform: rotate(-15deg);
+    }
+    table#orderPreview {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+    table#orderPreview th,
+    table#orderPreview td {
+      padding: 10px;
+      text-align: center;
+      border-bottom: 1px solid #ddd;
+    }
+    #totalPrice {
+      text-align: center;
+      margin-top: 10px;
+      font-size: 20px;
+    }
+    button#submitOrder {
+      display: block;
+      margin: 20px auto 0;
+      background-color: #007bff;
+      color: white;
+      padding: 12px 24px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+      transition: background-color 0.3s;
+    }
+    button#submitOrder:hover {
+      background-color: #0056b3;
+    }
+    @media screen and (max-width: 600px) {
+      .product-card {
+        flex-direction: column;
+      }
+      .product-field {
+        flex: 1 1 100%;
+      }
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <img src="{{ url_for('static', filename='logo.png') }}" alt="לוגו החברה" class="logo">
-        <form id="orderForm">
-            <h2>הקלד את כתובת המייל הרשומה במערכת</h2>
-            <a href="https://wa.me/97258/006077?text=  היי ברצוני להרשם למערכת" class="btn whatsapp">📞  להרשמה  בוואטסאפ</a>
-
-            <br><br>
-
-
-          
-            <input type="email" id="customer_email" placeholder="האימייל שלך" required autocomplete="email">
-            <h1>רשימת מוצרים</h1>
-            <div class="categories">
-                {% for category, products in categorized_products.items() %}
-                <div class="category">
-                    <div class="category-header" onclick="toggleCategory(this)">
-                        <h2>{{ category }}</h2>
-                        <span class="toggle-icon">▼</span>
-                    </div>
-                    <div class="category-content">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>תיאור</th>
-                                    <th>מחיר</th>
-                                    <th>כמות</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for product in products %}
-                                    <tr>
-                                        <td style="position: relative;">
-                                            {{ product.item_name }}
-                                            {% if product.quantity | int <= 0 %}
-                                                <span class="out-of-stock">אזל מהמלאי</span>
-                                            {% endif %}
-                                        </td>
-                                        <td>{{ product.sale_nis | int }} ₪</td>
-                                        <td>
-                                            <input type="number" name="product_{{ product.item_id }}" value="0" min="0" 
-                                                max="{{ product.quantity }}" 
-                                                step="1" 
-                                                data-id="{{ product.item_id }}" 
-                                                data-description="{{ product.item_name }}" 
-                                                data-price="{{ product.sale_nis }}"
-                                                {% if product.quantity | int <= 0 %} disabled {% endif %}>
-                                        </td>
-                                    </tr>
-                                    {% endfor %}
-
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-                {% endfor %}
+  <div class="container">
+    <img src="{{ url_for('static', filename='logo.png') }}" alt="לוגו החברה" class="logo" />
+    <form id="orderForm">
+      <h2>הקלד את כתובת המייל הרשומה במערכת</h2>
+      <div class="action-group">
+        <input type="email" id="customer_email" placeholder="האימייל שלך" required autocomplete="email" />
+        <button type="button" id="checkBalanceButton">בדוק יתרה</button>
+        <a href="https://wa.me/972587006077?text=היי ברצוני להרשם למערכת" class="btn whatsapp">📞 להרשמה בוואטסאפ</a>
+      </div>
+      <div id="balanceContainer"><p id="balanceDisplay"></p></div>
+      <h1>רשימת מוצרים</h1>
+      <div class="categories">
+        {% for category, products in categorized_products.items() %}
+        <div class="category">
+          <div class="category-header" onclick="toggleCategory(this)">
+            <span>{{ category }}</span>
+            <span class="toggle-icon">▼</span>
+          </div>
+          <div class="category-content">
+            {% for product in products %}
+            <div class="product-card">
+              {% if product.quantity | int <= 0 %}
+              <span class="out-of-stock">אזל מהמלאי</span>
+              {% endif %}
+              <div class="product-field">
+                <div class="product-label">תיאור:</div>
+                <div class="product-value">{{ product.item_name }}</div>
+              </div>
+              <div class="product-field">
+                <div class="product-label">מחיר:</div>
+                <div class="product-value">{{ product.sale_nis | int }} ₪</div>
+              </div>
+              <div class="product-field">
+                <div class="product-label">כמות:</div>
+                <input type="number" name="product_{{ product.item_id }}" value="0" min="0"
+                  max="{{ product.quantity }}" step="1" data-id="{{ product.item_id }}"
+                  data-description="{{ product.item_name }}" data-price="{{ product.sale_nis }}"
+                  {% if product.quantity | int <= 0 %}disabled{% endif %} />
+              </div>
             </div>
-
-            <h2>  סיכום הזמנה  </h2>
-            <table id="orderPreview">
-                <thead>
-                    <tr>
-                        <th>תיאור</th>
-                        <th>כמות</th>
-                        <th>מחיר ליחידה</th>
-                        <th>סה"כ</th>
-                    </tr>
-                </thead>
-                <tbody></tbody>
-            </table>
-            <h3 id="totalPrice">סה"כ: 0 ₪</h3>
-
-            <button type="button" onclick="submitOrder()">שלח הזמנה</button>
-        </form>
-    </div>
-    <script>
-        
-        document.addEventListener('DOMContentLoaded', function () {
-    document.querySelectorAll('input[type=number]').forEach(input => {
+            {% endfor %}
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+      <h2>סיכום הזמנה</h2>
+      <table id="orderPreview">
+        <thead>
+          <tr>
+            <th>תיאור</th>
+            <th>כמות</th>
+            <th>מחיר ליחידה</th>
+            <th>סה"כ</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+      <h3 id="totalPrice">סה"כ: 0 ₪</h3>
+      <button type="button" id="submitOrder" onclick="submitOrder()">שלח הזמנה</button>
+    </form>
+  </div>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      document.querySelectorAll('input[type=number]').forEach(input => {
         input.addEventListener('input', updateOrderPreview);
+      });
+      document.getElementById('checkBalanceButton').addEventListener('click', checkBalance);
     });
-});
 
-function updateOrderPreview() {
-    const orderPreviewTable = document.getElementById('orderPreview').querySelector('tbody');
-    const totalPriceElement = document.getElementById('totalPrice');
-    orderPreviewTable.innerHTML = ''; // נקה את הטבלה לפני שממלאים אותה מחדש
+    function toggleCategory(header) {
+      const content = header.nextElementSibling;
+      const icon = header.querySelector('.toggle-icon');
+      const isOpen = content.style.display === 'block';
+      content.style.display = isOpen ? 'none' : 'block';
+      icon.textContent = isOpen ? '▼' : '▲';
+    }
 
-    let totalPrice = 0;
+    function updateOrderPreview() {
+      const orderPreviewTable = document.getElementById('orderPreview').querySelector('tbody');
+      const totalPriceElement = document.getElementById('totalPrice');
+      orderPreviewTable.innerHTML = '';
+      let totalPrice = 0;
 
-    document.querySelectorAll('input[type=number]').forEach(input => {
+      document.querySelectorAll('input[type=number]').forEach(input => {
         const quantity = parseInt(input.value, 10);
         if (quantity > 0) {
-            const description = input.getAttribute('data-description');
-            const price = parseFloat(input.getAttribute('data-price'));
-            const total = price * quantity;
+          const description = input.getAttribute('data-description');
+          const price = parseFloat(input.getAttribute('data-price'));
+          const total = price * quantity;
+          totalPrice += total;
 
-            totalPrice += total;
-
-            // יצירת שורה חדשה בטבלה
-            const row = document.createElement('tr');
-            row.innerHTML = `
-                <td>${description}</td>
-                <td>${quantity}</td>
-                <td>${price.toFixed(2)} ₪</td>
-                <td>${total.toFixed(2)} ₪</td>
-            `;
-            orderPreviewTable.appendChild(row);
+          const row = document.createElement('tr');
+          row.innerHTML = `
+            <td>${description}</td>
+            <td>${quantity}</td>
+            <td>${price.toFixed(2)} ₪</td>
+            <td>${total.toFixed(2)} ₪</td>
+          `;
+          orderPreviewTable.appendChild(row);
         }
-    });
+      });
+      totalPriceElement.textContent = `סה"כ: ${totalPrice.toFixed(2)} ₪`;
+    }
 
-    totalPriceElement.textContent = `סה"כ: ${totalPrice.toFixed(2)} ₪`;
-}
-
-function submitOrder() {
-    const customerEmail = document.getElementById('customer_email').value;
-    const orderButton = document.querySelector('button[type=button]');
-
-    if (!customerEmail.includes('@')) {
+    function checkBalance() {
+      const email = document.getElementById('customer_email').value;
+      if (!email.includes('@')) {
         alert('נא להזין אימייל תקין');
         return;
+      }
+      fetch('/get_balance', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: email })
+      })
+      .then(response => response.json())
+      .then(data => {
+        document.getElementById('balanceDisplay').textContent = `יתרה: ${data.balance} ₪`;
+      })
+      .catch(error => {
+        console.error('Error fetching balance:', error);
+        alert('אירעה שגיאה בבדיקת היתרה');
+      });
     }
 
-    const orderDate = new Date().toISOString().split('T')[0];
-    const items = [];
-    let totalPrice = 0;
+    function submitOrder() {
+      const customerEmail = document.getElementById('customer_email').value;
+      const orderButton = document.getElementById('submitOrder');
 
-    document.querySelectorAll('input[type=number]').forEach(input => {
+      if (!customerEmail.includes('@')) {
+        alert('נא להזין אימייל תקין');
+        return;
+      }
+
+      const orderDate = new Date().toISOString().split('T')[0];
+      const items = [];
+      let totalPrice = 0;
+
+      document.querySelectorAll('input[type=number]').forEach(input => {
         const quantity = parseInt(input.value, 10);
         if (quantity > 0) {
-            const product = {
-                product_id: input.getAttribute('data-id'),
-                description: input.getAttribute('data-description'),
-                quantity: quantity,
-                price: parseFloat(input.getAttribute('data-price'))
-            };
-            totalPrice += product.quantity * product.price;
-            items.push(product);
+          const product = {
+            product_id: input.getAttribute('data-id'),
+            description: input.getAttribute('data-description'),
+            quantity: quantity,
+            price: parseFloat(input.getAttribute('data-price'))
+          };
+          totalPrice += product.quantity * product.price;
+          items.push(product);
         }
-    });
+      });
 
-    if (items.length === 0) {
+      if (items.length === 0) {
         alert('יש לבחור לפחות מוצר אחד');
         return;
-    }
+      }
 
-    // נעל את הכפתור ושנה את הטקסט שלו
-    orderButton.disabled = true;
-    orderButton.textContent = 'הזמנה מתבצעת...';
+      orderButton.disabled = true;
+      orderButton.textContent = 'הזמנה מתבצעת...';
 
-    const orderData = {
+      const orderData = {
         email: customerEmail,
         date: orderDate,
         items: items,
         total: totalPrice.toFixed(2)
-    };
+      };
 
-    fetch('/order', {
+      fetch('/order', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(orderData)
-    })
-    .then(response => response.text())
-    .then(html => {
+      })
+      .then(response => response.text())
+      .then(html => {
         document.open();
         document.write(html);
         document.close();
-    })
-    .catch(error => {
+      })
+      .catch(error => {
         console.error('Error:', error);
         alert('אירעה שגיאה בשליחת ההזמנה');
         orderButton.disabled = false;
         orderButton.textContent = 'שלח הזמנה';
-    });
-}
-
-
-        function toggleCategory(header) {
-            const content = header.nextElementSibling;
-            const icon = header.querySelector('.toggle-icon');
-            
-            if (content.style.display === 'none' || content.style.display === '') {
-                content.style.display = 'block';
-                icon.innerHTML = '▲';
-            } else {
-                content.style.display = 'none';
-                icon.innerHTML = '▼';
-            }
-        }
-    </script>
-    
+      });
+    }
+  </script>
 </body>
 </html>
