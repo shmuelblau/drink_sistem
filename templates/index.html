@@ -329,13 +329,13 @@
     const balance = parseFloat(data.balance);
 
     // עדכון הטקסט
-    el.textContent = `יתרה: ${balance} ₪`;
+    el.textContent = data.balance ;
 
     // הורדת מחלקות צבע קודמות
     el.classList.remove('balance-positive', 'balance-negative');
 
     // הוספת המחלקה המתאימה
-    if (balance >= 0) {
+    if (balance == "לא קיים חוב במערכת") {
       el.classList.add('balance-positive');
     } else {
       el.classList.add('balance-negative');

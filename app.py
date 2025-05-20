@@ -28,7 +28,12 @@ def get_balance_for(email):
 
 
             
-            
+        if balance > 0 :
+            return f"חוב על סך {int(balance) * -1} שקלים "
+        else:
+            return "לא קיים חוב במערכת"
+
+               
 
            
 
